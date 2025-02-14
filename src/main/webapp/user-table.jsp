@@ -156,7 +156,7 @@
                                     <tbody>
                                     	<c:forEach var="user" items="${listUser}" varStatus="loop">
                                     		<tr>
-                                            <td><c:out value="${user.id}"/></td>
+                                            <td><c:out value="${loop.index + 1}"/></td>
                                             <td><c:out value="${user.fullname}"/></td>
                                             <td><c:out value="${user.fullname}"/></td>
                                             <td><c:out value="${user.email}"/></td>
