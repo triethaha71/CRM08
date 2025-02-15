@@ -6,21 +6,25 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="plugins/images/favicon.png">
-    <title>Pixel Admin</title>
+    <title>Pixel Admin - Chi tiết dự án</title>
     <!-- Bootstrap Core CSS -->
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Menu CSS -->
     <link href="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-    <!-- animation CSS -->
+    <!-- Animation CSS -->
     <link href="css/animate.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/style.css" rel="stylesheet">
-    <!-- color CSS -->
+    <!-- color CSS you can use different color css from css/colors folder -->
+    <!-- We have chosen the skin-blue (blue.css) for this starter
+          page. However, you can choose any other skin from folder css / colors .
+-->
     <link href="css/colors/blue-dark.css" id="theme" rel="stylesheet">
     <link rel="stylesheet" href="./css/custom.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -125,53 +129,37 @@
             <div class="container-fluid">
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Danh sách dự án</h4>
+                        <h4 class="page-title">Chi tiết dự án</h4>
                     </div>
-                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12 text-right">
-                        <a href="groupwork-add" class="btn btn-sm btn-success">Thêm mới</a>
+                    <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                        <ol class="breadcrumb">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Chi tiết dự án</li>
+                        </ol>
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
                 <!-- /row -->
                 <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-md-12">
                         <div class="white-box">
-                            <div class="table-responsive">
-                                <table class="table" id="example">
-                                    <thead>
-                                        <tr>
-                                            <th>STT</th>
-                                            <th>Tên Dự Án</th>
-                                            <th>Ngày Bắt Đầu</th>
-                                            <th>Ngày Kết Thúc</th>
-                                            <th>Hành Động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="project" items="${projects}" varStatus="loop">
-                                            <tr>
-                                                <td>${loop.index + 1}</td>
-                                                <td>${project.name}</td>
-                                                <td>${project.startDate}</td>
-                                                <td>${project.endDate}</td>
-                                                <td>
-                                                     <!-- Thêm link Sửa và Xóa -->
-                                                    <a href="groupwork-edit?id=${project.id}" class="btn btn-sm btn-primary">Sửa</a>
-                                                    <a href="groupwork-delete?id=${project.id}" class="btn btn-sm btn-danger">Xóa</a>
-                                                    <a href="groupwork-details?id=${project.id}" class="btn btn-sm btn-info">Xem</a>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <h3 class="box-title">Thông tin dự án</h3>
+                            <c:if test="${not empty project}">
+                                <p><strong>Tên dự án:</strong> <c:out value="${project.name}" /></p>
+                                <p><strong>Ngày bắt đầu:</strong> <c:out value="${project.startDate}" /></p>
+                                <p><strong>Ngày kết thúc:</strong> <c:out value="${project.endDate}" /></p>
+                            </c:if>
+                            <c:if test="${empty project}">
+                                <p>Không tìm thấy thông tin dự án.</p>
+                            </c:if>
+                            <!-- Thêm các thông tin khác của dự án nếu cần -->
                         </div>
                     </div>
                 </div>
                 <!-- /.row -->
             </div>
             <!-- /.container-fluid -->
-            <footer class="footer text-center">  ©CMR08 . </footer>
+            <footer class="footer text-center"> ©CMR08. </footer>
         </div>
         <!-- /#page-wrapper -->
     </div>
@@ -184,16 +172,10 @@
     <script src="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
     <!--slimscroll JavaScript -->
     <script src="js/jquery.slimscroll.js"></script>
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <!--Wave Effects -->
     <script src="js/waves.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="js/custom.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#example').DataTable();
-        });
-    </script>
 </body>
 
 </html>

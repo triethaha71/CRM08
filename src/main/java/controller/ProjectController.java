@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import entity.ProjectEntity;
 import services.ProjectServices;
 
-@WebServlet(urlPatterns = {"/groupwork", "/groupwork-add", "/groupwork-edit", "/groupwork-delete"})
+@WebServlet(urlPatterns = {"/groupwork", "/groupwork-add", "/groupwork-edit", "/groupwork-delete", "/groupwork-details"})
 public class ProjectController extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private ProjectServices projectService = new ProjectServices();
@@ -61,6 +61,39 @@ public class ProjectController extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             projectService.deleteProject(id);
             response.sendRedirect("groupwork");
+        } else if ("/groupwork-details".equals(path)) {
+            // Hiển thị chi tiết dự án
+            int id = Integer.parseInt(request.getParameter("id"));
+            ProjectEntity project = projectService.getProjectById(id);
+
+            if (project == null) {
+                // Xử lý trường hợp không tìm thấy project
+                response.sendRedirect("groupwork"); // Hoặc chuyển hướng đến trang lỗi
+                return;
+            }
+
+            // Định dạng lại ngày tháng trước khi hiển thị
+            SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat userFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+            try {
+                if (project.getStartDate() != null && !project.getStartDate().isEmpty()) {
+                    Date startDate = dbFormat.parse(project.getStartDate());
+                    project.setStartDate(userFormat.format(startDate));
+                }
+
+                if (project.getEndDate() != null && !project.getEndDate().isEmpty()) {
+                    Date endDate = dbFormat.parse(project.getEndDate());
+                    project.setEndDate(userFormat.format(endDate));
+                }
+
+            } catch (ParseException e) {
+                System.err.println("Error parsing date (doGet): " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            request.setAttribute("project", project);
+            request.getRequestDispatcher("groupwork-details.jsp").forward(request, response);
         }
     }
 

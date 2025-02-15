@@ -14,13 +14,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import config.MysqlConfig;
 import entity.RoleEntity;
 import entity.UserEntity;
+import repository.UserRepository; // Import UserRepository
+import services.UserServices; // Import UserServices
 
 @WebServlet(name = "loginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
+
+    private UserServices userService = new UserServices();
+    private UserRepository userRepository = new UserRepository();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,7 +44,7 @@ public class LoginController extends HttpServlet {
                     password = item.getValue();
                 }
             }
-        }		
+        }
 
         // Gửi email và password tới trang login.jsp
         req.setAttribute("email", email);
@@ -55,8 +61,8 @@ public class LoginController extends HttpServlet {
 
         List<UserEntity> listUser = new ArrayList<>();
 
-        // B1: Chuẩn bị câu truy vấn
-        String query = "SELECT r.name, u.email, u.password "
+        // B1: Chuẩn bị câu truy vấn - LẤY ĐẦY ĐỦ THÔNG TIN USER
+        String query = "SELECT u.id, u.fullname, u.email, u.phone, r.id AS role_id, r.name AS role_name "
                 + "FROM users u "
                 + "JOIN roles r ON u.role_id = r.id "
                 + "WHERE u.email = ? AND u.password = ?";
@@ -68,21 +74,25 @@ public class LoginController extends HttpServlet {
             //Truyền các giá trị dấu ? ở câu truy vấn
             statement.setString(1, email);
             statement.setString(2, password);
-            
+
             //excuteQuery: SELECT
-            
+
             //excuteUpdate: Không phải câu SELECT
             ResultSet result = statement.executeQuery();
 
             // Duyệt kết quả và thêm vào danh sách người dùng
             while (result.next()) {
                 UserEntity entity = new UserEntity();
+                entity.setId(result.getInt("id"));  // Lấy ID
+                entity.setFullname(result.getString("fullname")); // Lấy Fullname
                 entity.setEmail(result.getString("email"));
+                entity.setPhone(result.getString("phone"));
 
                 RoleEntity roleEntity = new RoleEntity();
-                roleEntity.setName(result.getString("name"));
-
+                roleEntity.setId(result.getInt("role_id")); // Lấy role ID
+                roleEntity.setName(result.getString("role_name"));  // Lấy Role Name
                 entity.setRole(roleEntity);
+
                 listUser.add(entity);
             }
 
@@ -92,11 +102,14 @@ public class LoginController extends HttpServlet {
 
         // Kiểm tra kết quả và xử lý
         if (listUser.size() > 0) {
+            // Lấy user đầu tiên từ list
+            UserEntity loggedInUser = listUser.get(0);
+
             if (remember != null) {
                 Cookie tkEmail = new Cookie("email", email);
                 Cookie tkPassword = new Cookie("password", password);
-                Cookie ckRole = new Cookie("role", listUser.get(0).getRole().getName());
-                						
+                Cookie ckRole = new Cookie("role", loggedInUser.getRole().getName());
+
                 // Đặt thời gian sống cho cookie (7 ngày)
                 tkEmail.setMaxAge(60 * 60 * 24 * 7);
                 tkPassword.setMaxAge(60 * 60 * 24 * 7);
@@ -106,6 +119,10 @@ public class LoginController extends HttpServlet {
                 resp.addCookie(tkPassword);
                 resp.addCookie(ckRole);
             }
+
+            // Lưu thông tin người dùng vào session
+            HttpSession session = req.getSession();
+            session.setAttribute("loggedInUser", loggedInUser);
 
             // Điều hướng đến trang chủ
             String contextPath = req.getContextPath();

@@ -10,7 +10,7 @@ import java.util.List;
 import config.MysqlConfig;
 import entity.RoleEntity;
 import entity.UserEntity;
-import entity.TaskEntity; // Import TaskEntity
+import entity.TaskEntity;
 
 public class UserRepository {
 
@@ -19,11 +19,8 @@ public class UserRepository {
 
 		int count = 0;
 		try {
-			// Mở kết nối CSDL
 			 Connection connection = MysqlConfig.getConnection();
-			 // Truyền câu truy vấn vào CSDL để kết nối
 			 PreparedStatement statement = connection.prepareStatement(query);
-			 //Xuất các kết quả truy vấn của mình về mảng
 
 			 statement.setString(1, fullname);
 			 statement.setString(2, email);
@@ -36,7 +33,6 @@ public class UserRepository {
 
 
 		 }catch (Exception e) {
-			 //Đặt tên hàm sau này lỗi dễ research để biết lỗi nó nằm ở đâu
 			System.out.println("findAll"+ e.getLocalizedMessage());
 		}
 		return count;
@@ -158,16 +154,18 @@ public class UserRepository {
 
     public List<TaskEntity> findTasksByUserId(int userId) {
         List<TaskEntity> tasks = new ArrayList<>();
-        String query = "SELECT t.id, t.name, t.start_date, t.end_date, t.user_id, t.job_id, t.status_id, s.name AS status_name " +
+        String query = "SELECT t.id, t.name, t.start_date, t.end_date, t.user_id, t.job_id, t.status_id, s.name AS status_name ,j.name AS project_name, u.fullname AS user_name " +
                        "FROM tasks t " +
                        "JOIN status s ON t.status_id = s.id " +
+                       "JOIN jobs j ON t.job_id = j.id " +
+                       "JOIN users u ON t.user_id = u.id " +  // Join để lấy tên người dùng
                        "WHERE t.user_id = ?";
 
         try (Connection connection = MysqlConfig.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
 
             statement.setInt(1, userId);
-            try (ResultSet resultSet = statement.executeQuery()) { // Auto-close ResultSet
+            try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet.next()) {
                     TaskEntity task = new TaskEntity();
@@ -178,15 +176,56 @@ public class UserRepository {
                     task.setUserId(resultSet.getInt("user_id"));
                     task.setJobId(resultSet.getInt("job_id"));
                     task.setStatusId(resultSet.getInt("status_id"));
-                    task.setStatusName(resultSet.getString("status_name")); // Lấy tên status
+                    task.setStatusName(resultSet.getString("status_name"));
+                    task.setProjectName(resultSet.getString("project_name"));
+                    task.setUserName(resultSet.getString("user_name")); // Set tên người dùng
                     tasks.add(task);
                 }
             }
 
-        } catch (SQLException e) { // Sửa đổi: Bắt SQLException cụ thể
-            System.out.println("findTasksByUserId: " + e.getMessage()); // In ra chi tiết lỗi
-            e.printStackTrace(); // In ra stack trace để debug dễ hơn
+        } catch (SQLException e) {
+            System.out.println("findTasksByUserId: " + e.getMessage());
+            e.printStackTrace();
         }
         return tasks;
+    }
+    
+    public int findTaskCountByStatusAndUserId(int userId, int statusId) {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM tasks WHERE user_id = ? AND status_id = ?";
+        try (Connection connection = MysqlConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+            statement.setInt(2, statusId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("findTaskCountByStatusAndUserId: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public int findTotalTaskCountByUserId(int userId) {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM tasks WHERE user_id = ?";
+        try (Connection connection = MysqlConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    count = resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("findTotalTaskCountByUserId: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return count;
     }
 }

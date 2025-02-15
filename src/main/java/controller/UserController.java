@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import entity.RoleEntity;
 import entity.UserEntity;
-import entity.TaskEntity; // Sửa đổi: Import TaskEntity
+import entity.TaskEntity;
 import services.UserServices;
 
 @WebServlet(name = "usercController", urlPatterns = { "/user", "/user-add", "/user-edit", "/user-delete", "/user-detail" })
@@ -33,15 +33,13 @@ public class UserController extends HttpServlet {
                 userAdd(req, resp);
                 break;
             case "/user-edit":
-                // Xử lý logic cho việc hiển thị form sửa user
                 getUserEdit(req, resp);
                 break;
             case "/user-delete":
-                // Xử lý logic cho việc xóa user
                 deleteUser(req, resp);
                 break;
             case "/user-detail":
-                showUserDetail(req, resp); // Thêm case cho /user-detail
+                showUserDetail(req, resp);
                 break;
 
         }
@@ -69,7 +67,6 @@ public class UserController extends HttpServlet {
                 userAdd(req, resp);
                 break;
             case "/user-edit":
-                // Xử lý logic cho việc cập nhật user
                 updateUser(req, resp);
                 break;
 
@@ -107,25 +104,37 @@ public class UserController extends HttpServlet {
         int roleId = Integer.parseInt(req.getParameter("role"));
 
         userServices.updateUser(id, fullname, email, phone, roleId);
-        resp.sendRedirect(req.getContextPath() + "/user"); // Redirect về trang danh sách user
+        resp.sendRedirect(req.getContextPath() + "/user");
     }
 
 
     private void deleteUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
         userServices.deleteUser(id);
-        resp.sendRedirect(req.getContextPath() + "/user"); // Redirect về trang danh sách user
+        resp.sendRedirect(req.getContextPath() + "/user");
     }
 
-    // Sửa đổi: Thêm phương thức để hiển thị chi tiết user và tasks
     private void showUserDetail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id")); // Lấy ID từ request parameter
-        UserEntity user = userServices.getUserById(id); // Lấy user từ service
-        List<TaskEntity> tasks = userServices.getTasksByUserId(id); // Sửa đổi: Lấy danh sách tasks
+        int id = Integer.parseInt(req.getParameter("id"));
+        UserEntity user = userServices.getUserById(id);
+        List<TaskEntity> tasks = userServices.getTasksByUserId(id);
 
-        req.setAttribute("user", user); // Đặt user vào request attribute
-        req.setAttribute("tasks", tasks); // Sửa đổi: Đặt danh sách tasks vào request attribute
-        req.getRequestDispatcher("/user-detail.jsp").forward(req, resp); // Forward đến trang JSP
+        int totalTasks = userServices.getTotalTaskCountByUserId(id);
+        int notStartedTasks = userServices.getTaskCountByStatusAndUserId(id, 1); // Giả sử status ID của "Chưa bắt đầu" là 1
+        int inProgressTasks = userServices.getTaskCountByStatusAndUserId(id, 2); // Giả sử status ID của "Đang thực hiện" là 2
+        int completedTasks = userServices.getTaskCountByStatusAndUserId(id, 3); // Giả sử status ID của "Hoàn thành" là 3
+
+        double notStartedPercentage = (totalTasks > 0) ? ((double) notStartedTasks / totalTasks) * 100 : 0;
+        double inProgressPercentage = (totalTasks > 0) ? ((double) inProgressTasks / totalTasks) * 100 : 0;
+        double completedPercentage = (totalTasks > 0) ? ((double) completedTasks / totalTasks) * 100 : 0;
+
+        req.setAttribute("user", user);
+        req.setAttribute("tasks", tasks);
+        req.setAttribute("totalTasks", totalTasks);
+        req.setAttribute("notStartedPercentage", String.format("%.0f", notStartedPercentage)); // Định dạng số về 0 chữ số thập phân
+        req.setAttribute("inProgressPercentage",String.format("%.0f", inProgressPercentage));
+        req.setAttribute("completedPercentage", String.format("%.0f", completedPercentage));
+        req.getRequestDispatcher("/user-detail.jsp").forward(req, resp);
     }
 
 }
