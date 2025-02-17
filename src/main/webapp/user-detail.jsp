@@ -70,10 +70,10 @@
                                     <b class="hidden-xs">CMR08</b>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="profile.html">Thông tin cá nhân</a></li>
+                                    <li><a href="profile">Thông tin cá nhân</a></li>
                                     <li><a href="#">Thống kê công việc</a></li>
                                     <li class="divider"></li>
-                                    <li><a href="#">Đăng xuất</a></li>
+                                    <li><a href="login">Đăng xuất</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -263,7 +263,7 @@
                     <!-- END DANH SÁCH CÔNG VIỆC -->
                 </div>
                 <!-- /.container-fluid -->
-                <footer class="footer text-center"> ©CMR08 . </footer>
+                <footer class="footer text-center"> ©CMR08 </footer>
             </div>
             <!-- /#page-wrapper -->
         </div>

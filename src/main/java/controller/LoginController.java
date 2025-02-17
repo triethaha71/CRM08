@@ -19,8 +19,8 @@ import javax.servlet.http.HttpSession;
 import config.MysqlConfig;
 import entity.RoleEntity;
 import entity.UserEntity;
-import repository.UserRepository; // Import UserRepository
-import services.UserServices; // Import UserServices
+import repository.UserRepository;
+import services.UserServices;
 
 @WebServlet(name = "loginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
@@ -35,7 +35,7 @@ public class LoginController extends HttpServlet {
         String email = "";
         String password = "";
 
-        if (cookies != null) {  // Kiểm tra nếu cookies không phải là null
+        if (cookies != null) {
             for (Cookie item : cookies) {
                 if ("email".equals(item.getName())) {
                     email = item.getValue();
@@ -70,10 +70,12 @@ public class LoginController extends HttpServlet {
         // B2: Mở kết nối tới CSDL và thực thi truy vấn
         Connection connection = MysqlConfig.getConnection();
         try {
+            // Mã hóa password trước khi truy vấn
+            String passwordEncode = UserServices.getMd5(password); //Sử dụng mã hóa MD5 từ UserServices
             PreparedStatement statement = connection.prepareStatement(query);
             //Truyền các giá trị dấu ? ở câu truy vấn
             statement.setString(1, email);
-            statement.setString(2, password);
+            statement.setString(2, passwordEncode); // Sử dụng password đã mã hóa
 
             //excuteQuery: SELECT
 
@@ -103,11 +105,11 @@ public class LoginController extends HttpServlet {
         // Kiểm tra kết quả và xử lý
         if (listUser.size() > 0) {
             // Lấy user đầu tiên từ list
-            UserEntity loggedInUser = listUser.get(0);
+            UserEntity loggedInUser = listUser.get(0); //Không cần thiết phải lấy user đầu tiên nữa, đã check listUser.size() > 0 rồi
 
             if (remember != null) {
                 Cookie tkEmail = new Cookie("email", email);
-                Cookie tkPassword = new Cookie("password", password);
+                Cookie tkPassword = new Cookie("password", password); // Lưu password gốc chứ không phải đã mã hóa
                 Cookie ckRole = new Cookie("role", loggedInUser.getRole().getName());
 
                 // Đặt thời gian sống cho cookie (7 ngày)

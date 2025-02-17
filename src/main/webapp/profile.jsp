@@ -263,7 +263,7 @@
                 <!-- END DANH SÁCH CÔNG VIỆC -->
             </div>
             <!-- /.container-fluid -->
-            <footer class="footer text-center"> ©CMR08 . </footer>
+            <footer class="footer text-center"> ©CMR08  </footer>
         </div>
         <!-- /#page-wrapper -->
     </div>
