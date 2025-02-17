@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" type="image/png" sizes="16x16" href="plugins/images/favicon.png">
-    <title>Pixel Admin</title>
+    <title>Pixel Admin - Thông tin cá nhân</title> <!-- Updated title -->
     <!-- Bootstrap Core CSS -->
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Menu CSS -->
@@ -44,7 +43,7 @@
                     <i class="fa fa-bars"></i>
                 </a>
                 <div class="top-left-part">
-                    <a class="logo" href="index.html">
+                    <a class="logo" href="index">  <!-- Corrected link -->
                         <b>
                             <img src="plugins/images/pixeladmin-logo.png" alt="home" />
                         </b>
@@ -69,13 +68,15 @@
                             <a class="profile-pic dropdown-toggle" data-toggle="dropdown" href="#">
                                 <img src="plugins/images/users/varun.jpg" alt="user-img" width="36"
                                     class="img-circle" />
-                                <b class="hidden-xs">CRM08</b>
+                                <b class="hidden-xs">
+                                    <c:out value="${sessionScope.loggedInUser.fullname}"/> <%-- Display logged-in user's name --%>
+                                </b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="profile">Thông tin cá nhân</a></li>
+                                <li><a href="profile">Thông tin cá nhân</a></li> <!-- Corrected link -->
                                 <li><a href="#">Thống kê công việc</a></li>
                                 <li class="divider"></li>
-                                <li><a href="login">Đăng xuất</a></li>
+                                <li><a href="login">Đăng xuất</a></li>  <!-- Corrected link -->
                             </ul>
                         </div>
                     </li>
@@ -90,11 +91,11 @@
             <div class="sidebar-nav navbar-collapse slimscrollsidebar">
                 <ul class="nav" id="side-menu">
                     <li style="padding: 10px 0 0;">
-                        <a href="index.html" class="waves-effect"><i class="fa fa-clock-o fa-fw"
+                        <a href="index" class="waves-effect"><i class="fa fa-clock-o fa-fw"
                                 aria-hidden="true"></i><span class="hide-menu">Dashboard</span></a>
                     </li>
                     <li>
-                        <a href="user-table" class="waves-effect"><i class="fa fa-user fa-fw"
+                        <a href="user" class="waves-effect"><i class="fa fa-user fa-fw"
                                 aria-hidden="true"></i><span class="hide-menu">Thành viên</span></a>
                     </li>
                     <li>
@@ -126,7 +127,7 @@
             <div class="container-fluid">
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Chi tiết thành viên</h4>
+                        <h4 class="page-title">Thông tin cá nhân</h4>  <!-- Updated title -->
                     </div>
                 </div>
                 <!-- /.row -->
@@ -250,7 +251,8 @@
                                                 <td><c:out value="${task.endDate}"/></td>
                                                 <td><c:out value="${task.statusName}"/></td>
                                                 <td>
-                                                    <a href="profile-edit.html" class="btn btn-sm btn-primary">Cập nhật</a>
+                                                    <a href="task-edit?id=${task.id}" class="btn btn-sm btn-primary">Cập nhật</a>
+                                                    <a href="index.html" class="btn btn-sm btn-primary">Quay lại</a>  <!-- Corrected link -->
                                                 </td>
                                             </tr>
                                         </c:forEach>
@@ -259,8 +261,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- END DANH SÁCH CÔNG VIỆC -->
+                </div>  <!-- Added the button -->
             </div>
             <!-- /.container-fluid -->
             <footer class="footer text-center"> ©CMR08  </footer>

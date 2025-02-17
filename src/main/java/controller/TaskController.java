@@ -1,3 +1,4 @@
+//Sửa full code của TaskController
 package controller;
 
 import java.io.IOException;
@@ -74,49 +75,96 @@ public class TaskController extends HttpServlet {
     }
     //Sửa full code của TaskController
     private void getTaskDetail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        TaskEntity task = taskService.getTaskById(id);
+        String idParam = req.getParameter("id");
 
-        req.setAttribute("task", task);
-        req.getRequestDispatcher("task-detail.jsp").forward(req, resp);
+        if (idParam != null && !idParam.isEmpty()) {
+            try {
+                int id = Integer.parseInt(idParam);
+                TaskEntity task = taskService.getTaskById(id);
+                req.setAttribute("task", task);
+                req.getRequestDispatcher("task-detail.jsp").forward(req, resp);
+            } catch (NumberFormatException e) {
+                // Xử lý nếu id không phải là số
+                req.setAttribute("errorMessage", "ID công việc không hợp lệ.");
+                req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+            }
+        } else {
+            // Xử lý nếu không có id được cung cấp
+            req.setAttribute("errorMessage", "Không tìm thấy ID công việc.");
+            req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+        }
     }
 
     private void getTaskEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        TaskEntity task = taskService.getTaskById(id);
+        String idParam = req.getParameter("id");
 
-        // Lấy danh sách project, user và status
-        List<ProjectEntity> jobList = jobService.getAllProjects();
-        List<UserEntity> userList = userService.getAllUsers();
-        List<StatusEntity> statusList = statusService.getAllStatuses();
+        if (idParam != null && !idParam.isEmpty()) {
+            try {
+                int id = Integer.parseInt(idParam);
+                TaskEntity task = taskService.getTaskById(id);
 
-        // Set các danh sách vào request attribute
-        req.setAttribute("jobList", jobList);
-        req.setAttribute("userList", userList);
-        req.setAttribute("statusList", statusList);
-        req.setAttribute("task", task);
+                // Lấy danh sách project, user và status
+                List<ProjectEntity> jobList = jobService.getAllProjects();
+                List<UserEntity> userList = userService.getAllUsers();
+                List<StatusEntity> statusList = statusService.getAllStatuses();
 
-        req.getRequestDispatcher("task-edit.jsp").forward(req, resp);
+                // Set các danh sách vào request attribute
+                req.setAttribute("jobList", jobList);
+                req.setAttribute("userList", userList);
+                req.setAttribute("statusList", statusList);
+                req.setAttribute("task", task);
+
+                req.getRequestDispatcher("task-edit.jsp").forward(req, resp);
+            } catch (NumberFormatException e) {
+                // Xử lý nếu id không phải là số
+                req.setAttribute("errorMessage", "ID công việc không hợp lệ.");
+                req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+            }
+        } else {
+            // Xử lý nếu không có id được cung cấp
+            req.setAttribute("errorMessage", "Không tìm thấy ID công việc.");
+            req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+        }
     }
 
     private void updateTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        String name = req.getParameter("name");
-        String startDate = req.getParameter("startDate");
-        String endDate = req.getParameter("endDate");
-        int userId = Integer.parseInt(req.getParameter("userId"));
-        int jobId = Integer.parseInt(req.getParameter("jobId"));
-        int statusId = Integer.parseInt(req.getParameter("statusId"));
+        try {
+            int id = Integer.parseInt(req.getParameter("id"));
+            String name = req.getParameter("name");
+            String startDate = req.getParameter("startDate");
+            String endDate = req.getParameter("endDate");
+            int userId = Integer.parseInt(req.getParameter("userId"));
+            int jobId = Integer.parseInt(req.getParameter("jobId"));
+            int statusId = Integer.parseInt(req.getParameter("statusId"));
 
-        taskService.updateTask(id, name, startDate, endDate, userId, jobId, statusId);
+            taskService.updateTask(id, name, startDate, endDate, userId, jobId, statusId);
+        } catch (NumberFormatException e) {
+            // Xử lý nếu id không phải là số
+            req.setAttribute("errorMessage", "ID công việc không hợp lệ.");
+            req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+        }
 
         resp.sendRedirect(req.getContextPath() + "/task");
     }
 
     private void deleteTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
-        taskService.deleteTask(id);
-        resp.sendRedirect(req.getContextPath() + "/task");
+        String idParam = req.getParameter("id");
+        if (idParam != null && !idParam.isEmpty()) {
+            try {
+                int id = Integer.parseInt(idParam);
+                taskService.deleteTask(id);
+                resp.sendRedirect(req.getContextPath() + "/task");
+            } catch (NumberFormatException e) {
+                // Xử lý nếu id không phải là số
+                req.setAttribute("errorMessage", "ID công việc không hợp lệ.");
+                req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+            }
+        } else {
+            // Xử lý nếu không có id được cung cấp
+            req.setAttribute("errorMessage", "Không tìm thấy ID công việc.");
+            req.getRequestDispatcher("error.jsp").forward(req, resp); // Chuyển hướng đến trang lỗi
+        }
+
     }
 
     private void getTaskAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

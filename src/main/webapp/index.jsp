@@ -11,17 +11,21 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" type="image/png" sizes="16x16" href="plugins/images/favicon.png">
-    <title>Pixel Admin - Chi tiết/Sửa công việc</title>  <!-- More descriptive title -->
-    <!-- Bootstrap Core CSS -->
+    <title>CRM08 - Dashboard</title>
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Menu CSS -->
     <link href="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <!-- toast CSS -->
+    <link href="plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet">
+    <!-- morris CSS -->
+    <link href="plugins/bower_components/morrisjs/morris.css" rel="stylesheet">
     <!-- animation CSS -->
     <link href="css/animate.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="css/style.css" rel="stylesheet">
     <!-- color CSS -->
     <link href="css/colors/blue-dark.css" id="theme" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom.css">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -39,8 +43,7 @@
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top m-b-0">
             <div class="navbar-header">
-                <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse"
-                    data-target=".navbar-collapse">
+                <a class="navbar-toggle hidden-sm hidden-md hidden-lg " href="javascript:void(0)" data-toggle="collapse" data-target=".navbar-collapse">
                     <i class="fa fa-bars"></i>
                 </a>
                 <div class="top-left-part">
@@ -67,17 +70,14 @@
                     <li>
                         <div class="dropdown">
                             <a class="profile-pic dropdown-toggle" data-toggle="dropdown" href="#">
-                                <img src="plugins/images/users/varun.jpg" alt="user-img" width="36"
-                                    class="img-circle" />
-                                <b class="hidden-xs">
-                                    <c:out value="${sessionScope.loggedInUser.fullname}"/> <%-- Display logged-in user's name --%>
-                                </b>
+                                <img src="plugins/images/users/varun.jpg" alt="user-img" width="36" class="img-circle" />
+                                <b class="hidden-xs">CRM08</b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="profile">Thông tin cá nhân</a></li> <!--  Corrected links -->
+                                <li><a href="profile">Thông tin cá nhân</a></li>
                                 <li><a href="#">Thống kê công việc</a></li>
                                 <li class="divider"></li>
-                                <li><a href="login">Đăng xuất</a></li>  <!-- Corrected link -->
+                                <li><a href="login">Đăng xuất</a></li>
                             </ul>
                         </div>
                     </li>
@@ -92,7 +92,7 @@
             <div class="sidebar-nav navbar-collapse slimscrollsidebar">
                 <ul class="nav" id="side-menu">
                     <li style="padding: 10px 0 0;">
-                        <a href="index" class="waves-effect"><i class="fa fa-clock-o fa-fw"
+                        <a href="index.html" class="waves-effect"><i class="fa fa-clock-o fa-fw"
                                 aria-hidden="true"></i><span class="hide-menu">Dashboard</span></a>
                     </li>
                     <li>
@@ -128,68 +128,103 @@
             <div class="container-fluid">
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Chi tiết/Sửa công việc</h4>
+                        <h4 class="page-title">Dashboard</h4>
                     </div>
                 </div>
-                <!-- /.row -->
-                <!-- .row -->
-                <div class="row">
-                    <div class="col-md-2 col-12"></div>
-                    <div class="col-md-8 col-xs-12">
-                        <div class="white-box">
-                            <form class="form-horizontal form-material" action="task-update" method="POST">  <!-- Added form and action -->
-                                <div class="form-group">
-                                    <label class="col-md-12">Tên dự án</label>
-                                    <div class="col-md-12">
-                                        <input type="text" name="projectName" readonly value="${task.projectName}" class="form-control form-control-line">  <!--  Populate with data -->
-                                    </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- row -->
+            <div class="row">
+                <!--col -->
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="white-box">
+                        <div class="col-in row">
+                            <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E"
+                                    class="linea-icon linea-basic"></i>
+                                <h5 class="text-muted vb">CHƯA BẮT ĐẦU</h5>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <h3 class="counter text-right m-t-15 text-danger">23</h3>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span
+                                            class="sr-only">40% Complete (success)</span> </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-md-12">Tên công việc</label>
-                                    <div class="col-md-12">
-                                        <input type="text" name="taskName" value="${task.name}" class="form-control form-control-line"> <!-- Populate with data -->
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-12">Ngày bắt đầu</label>
-                                    <div class="col-md-12">
-                                        <input type="text" name="startDate" value="${task.startDate}" class="form-control form-control-line"> <!-- Populate with data -->
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-12">Ngày kết thúc</label>
-                                    <div class="col-md-12">
-                                        <input type="text" name="endDate" value="${task.endDate}" class="form-control form-control-line"> <!-- Populate with data -->
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-12">Trạng thái</label>
-                                    <div class="col-md-12">
-                                        <select name="status" class="form-control form-control-line">
-                                            <option value="1" <c:if test="${task.status == 1}">selected</c:if>>Chưa thực hiện</option>  <!-- Dynamic selection -->
-                                            <option value="2" <c:if test="${task.status == 2}">selected</c:if>>Đang thực hiện</option> <!-- Dynamic selection -->
-                                            <option value="3" <c:if test="${task.status == 3}">selected</c:if>>Đã hoàn thành</option> <!-- Dynamic selection -->
-                                        </select>
-                                    </div>
-                                </div>
-                                 <input type="hidden" name="taskId" value="${task.id}">  <!-- Hidden field for task ID -->
-                                <div class="form-group">
-                                    <div class="col-sm-12">
-                                        <button type="submit" class="btn btn-success">Lưu lại</button>
-                                        <a href="task" class="btn btn-primary">Quay lại</a>  <!-- Corrected link -->
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-2 col-12"></div>
                 </div>
-                <!-- /.row -->
+                <!-- /.col -->
+                <!--col -->
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="white-box">
+                        <div class="col-in row">
+                            <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic"
+                                    data-icon=""></i>
+                                <h5 class="text-muted vb">ĐANG THỰC HIỆN</h5>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <h3 class="counter text-right m-t-15 text-megna">169</h3>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-megna" role="progressbar" aria-valuenow="40"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span
+                                            class="sr-only">40% Complete (success)</span> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <!--col -->
+                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                    <div class="white-box">
+                        <div class="col-in row">
+                            <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic"
+                                    data-icon=""></i>
+                                <h5 class="text-muted vb">ĐÃ HOÀN THÀNH</h5>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <h3 class="counter text-right m-t-15 text-primary">157</h3>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="40"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span
+                                            class="sr-only">40% Complete (success)</span> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
             </div>
-            <!-- /.container-fluid -->
-            <footer class="footer text-center"> ©CMR08 </footer>
+            <!-- /.row -->
+            <!--row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="white-box">
+                        <h3 class="box-title">Sales Difference</h3>
+                        <ul class="list-inline text-right">
+                            <li>
+                                <h5><i class="fa fa-circle m-r-5" style="color: #dadada;"></i>Site A View</h5>
+                            </li>
+                            <li>
+                                <h5><i class="fa fa-circle m-r-5" style="color: #aec9cb;"></i>Site B View</h5>
+                            </li>
+                        </ul>
+                        <div id="morris-area-chart2" style="height: 370px;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /#page-wrapper -->
+        <!-- /.container-fluid -->
+        <footer class="footer text-center"> ©CMR08  </footer>
+    </div>
+    <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
@@ -202,8 +237,16 @@
     <script src="js/jquery.slimscroll.js"></script>
     <!--Wave Effects -->
     <script src="js/waves.js"></script>
+    <!--Counter js -->
+    <script src="plugins/bower_components/waypoints/lib/jquery.waypoints.js"></script>
+    <script src="plugins/bower_components/counterup/jquery.counterup.min.js"></script>
+    <!--Morris JavaScript -->
+    <script src="plugins/bower_components/raphael/raphael-min.js"></script>
+    <script src="plugins/bower_components/morrisjs/morris.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="js/custom.min.js"></script>
+    <script src="js/dashboard1.js"></script>
+    <script src="plugins/bower_components/toast-master/js/jquery.toast.js"></script>
 </body>
 
 </html>
